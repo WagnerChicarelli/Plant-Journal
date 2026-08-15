@@ -1,0 +1,14 @@
+{
+  "name": "plant-journal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CLI para acompanhar os cuidados com plantas.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "node --test"
+  }
+}
