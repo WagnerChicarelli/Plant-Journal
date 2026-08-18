@@ -6,7 +6,6 @@ Uma CLI em Node.js para registrar plantas e acompanhar suas regas. Esta é a pri
 
 - Node.js 20 ou superior
 - npm (incluído com o Node.js)
-- Git
 
 ## Como executar
 
@@ -28,11 +27,3 @@ npm start -- water <id-da-planta>
 ```bash
 npm test
 ```
-
-## Próximas etapas
-
-1. Adicionar espécie, local e observações ao comando `add`.
-2. Transformar a CLI em API REST com Express.
-3. Migrar de JSON para SQLite e, depois, PostgreSQL.
-4. Adicionar uma interface web.
-5. Configurar Docker e integração contínua no GitHub Actions.
