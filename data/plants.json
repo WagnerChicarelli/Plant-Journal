@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "id": "b5308b2c-739c-4cf7-bc2d-abd04f704dd4",
+    "name": "Manjericão",
+    "species": "",
+    "location": "",
+    "wateringFrequency": 2,
+    "lastWatered": null,
+    "notes": "",
+    "createdAt": "2026-08-18T12:46:37.445Z",
+    "wateringHistory": []
+  },
+  {
+    "id": "d75e6f90-c044-45c1-87f9-2dccb5cd3dd6",
+    "name": "Hortela",
+    "species": "",
+    "location": "",
+    "wateringFrequency": 4,
+    "lastWatered": null,
+    "notes": "",
+    "createdAt": "2026-08-18T12:48:29.405Z",
+    "wateringHistory": []
+  },
+  {
+    "id": "7d2b4eba-e4b7-4184-ac34-81a92a966055",
+    "name": "Arroz",
+    "species": "",
+    "location": "",
+    "wateringFrequency": 7,
+    "lastWatered": null,
+    "notes": "",
+    "createdAt": "2026-08-18T12:48:43.549Z",
+    "wateringHistory": []
+  },
+  {
+    "id": "25d04007-f281-4915-8014-4e028302066e",
+    "name": "alface",
+    "species": "",
+    "location": "",
+    "wateringFrequency": 8,
+    "lastWatered": null,
+    "notes": "",
+    "createdAt": "2026-08-18T12:48:53.123Z",
+    "wateringHistory": []
+  }
+]
