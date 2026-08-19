@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import plantsRouter from './routes/plants.routes.js';
 import { runMigrations } from './db/migrations.js';

@@ -234,27 +234,42 @@ tests/
 
 ## API Externa (Clima)
 
-O projeto integra com a **Open-Meteo API** (gratuita, sem chave de API) para consultar dados climáticos.
+O projeto integra com a **WeatherAPI** para consultar dados climáticos, com **fallback automático para Open-Meteo** caso a chave atinja o limite de requisições.
+
+### Configuração
+
+1. Crie uma conta gratuita em [weatherapi.com](https://www.weatherapi.com/)
+2. Copie sua API Key
+3. Crie o arquivo `.env` na raiz do projeto:
+```bash
+WEATHER_API_KEY=sua_chave_aqui
+```
+
+### Estratégia de Backup
+
+```
+Requisição de clima
+        ↓
+Tenta WeatherAPI (requer chave)
+        ↓
+    Sucesso? ──→ Retorna dados (fonte: weatherapi)
+        ↓ Não
+Usa Open-Meteo (backup, sem chave)
+        ↓
+    Retorna dados (fonte: open-meteo)
+```
+
+**Por que usar fallback?**
+- A WeatherAPI possui limite de 1.000.000 de requisições/mês
+- Se a chave expirar ou atingir o limite, a aplicação continua funcionando
+- O Open-Meteo é gratuito e não requer chave de API
 
 ### Funcionalidades
 
 - Consulta temperatura, umidade e probabilidade de chuva
 - Recomendação automática de rega baseada no clima
 - Cache de 30 minutos para evitar requisições repetidas
-
-### Como funciona
-
-```
-GET /plants/:id/weather
-        ↓
-weather.service.js
-        ↓
-Open-Meteo API (fetch)
-        ↓
-Cache (30 min)
-        ↓
-Recomendação de rega
-```
+- Fallback automático entre provedores
 
 ## Docker
 
@@ -352,7 +367,7 @@ PostgreSQL
 - **React 18** — frontend
 - **Vite** — build tool
 - **PostgreSQL** — banco de dados
-- **Open-Meteo API** — dados climáticos
+- **WeatherAPI** — dados climáticos
 - **Docker** — containerização
 - **GitHub Actions** — CI/CD
 - **Node.js Test Runner** — testes nativos

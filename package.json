@@ -18,6 +18,7 @@
     "migrate:sqlite": "node src/db/migrate-sqlite.js"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.23.0",
     "sql.js": "^1.14.2"
