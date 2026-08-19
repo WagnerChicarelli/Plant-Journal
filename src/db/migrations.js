@@ -1,9 +1,7 @@
-import { getDb } from './connection.js';
+import { query } from './connection.js';
 
 export async function runMigrations() {
-  const db = await getDb();
-
-  db.run(`
+  await query(`
     CREATE TABLE IF NOT EXISTS plants (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -16,7 +14,7 @@ export async function runMigrations() {
     )
   `);
 
-  db.run(`
+  await query(`
     CREATE TABLE IF NOT EXISTS watering_events (
       id TEXT PRIMARY KEY,
       plant_id TEXT NOT NULL,
@@ -27,5 +25,5 @@ export async function runMigrations() {
     )
   `);
 
-  db.run(`CREATE INDEX IF NOT EXISTS idx_watering_plant_id ON watering_events(plant_id)`);
+  await query(`CREATE INDEX IF NOT EXISTS idx_watering_plant_id ON watering_events(plant_id)`);
 }

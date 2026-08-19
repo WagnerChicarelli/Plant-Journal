@@ -14,10 +14,12 @@
     "dev:all": "node --watch src/server.js & cd frontend && npm run dev",
     "test": "node --test tests/plant.test.js tests/watering.test.js",
     "test:api": "node scripts/api-test.js",
-    "migrate": "node src/db/migrate.js"
+    "migrate": "node src/db/migrate.js",
+    "migrate:sqlite": "node src/db/migrate-sqlite.js"
   },
   "dependencies": {
     "express": "^5.2.1",
+    "pg": "^8.23.0",
     "sql.js": "^1.14.2"
   }
 }
