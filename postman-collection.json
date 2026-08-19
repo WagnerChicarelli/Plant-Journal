@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "Plant Journal API",
+    "description": "API para gerenciar plantas e regas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "plantId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Plantas",
+      "item": [
+        {
+          "name": "Listar todas as plantas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar planta por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants/{{plantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "{{plantId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Plantas que precisam de água",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants/due-for-watering",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "due-for-watering"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar planta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.id) {",
+                  "  pm.collectionVariables.set('plantId', response.id);",
+                  "  console.log('plantId salvo: ' + response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rosa\",\n  \"species\": \"Rosa gallica\",\n  \"location\": \"Varanda\",\n  \"wateringFrequency\": 3,\n  \"notes\": \"Regar pela manhã\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/plants",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Regas",
+      "item": [
+        {
+          "name": "Registrar rega",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"200ml\",\n  \"notes\": \"Rega pela manhã\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/plants/{{plantId}}/water",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "{{plantId}}", "water"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Histórico de regas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants/{{plantId}}/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "{{plantId}}", "history"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

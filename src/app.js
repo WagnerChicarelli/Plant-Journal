@@ -1,10 +1,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createPlant, isDueForWatering, waterPlant } from './plant.js';
-import { loadPlants, savePlants } from './storage.js';
+import { runMigrations } from './db/migrations.js';
+import * as service from './services/plants.service.js';
 
-const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-const dataFile = path.join(currentDirectory, '..', 'data', 'plants.json');
 const [command, ...args] = process.argv.slice(2);
 
 function showHelp() {
@@ -18,19 +16,19 @@ function showHelp() {
 }
 
 async function main() {
-  const plants = await loadPlants(dataFile);
+  await runMigrations();
 
   if (!command || command === 'help') return showHelp();
 
   if (command === 'add') {
     const [name, frequency = '7'] = args;
-    const plant = createPlant({ name, wateringFrequency: frequency });
-    await savePlants(dataFile, [...plants, plant]);
+    const plant = await service.addPlant({ name, wateringFrequency: frequency });
     return console.log(`Planta cadastrada: ${plant.name} (${plant.id})`);
   }
 
   if (command === 'list' || command === 'due') {
-    const result = command === 'due' ? plants.filter(isDueForWatering) : plants;
+    const plants = await service.findAll();
+    const result = command === 'due' ? plants.filter(service.isDueForWatering) : plants;
     if (result.length === 0) return console.log('Nenhuma planta encontrada.');
     result.forEach((plant) => console.log(`${plant.id} | ${plant.name} | rega a cada ${plant.wateringFrequency} dia(s)`));
     return;
@@ -38,12 +36,8 @@ async function main() {
 
   if (command === 'water') {
     const [id] = args;
-    const index = plants.findIndex((plant) => plant.id === id);
-    if (index === -1) throw new Error('Planta não encontrada. Use o comando list para obter o id.');
-    const updatedPlant = waterPlant(plants[index]);
-    plants[index] = updatedPlant;
-    await savePlants(dataFile, plants);
-    return console.log(`Rega registrada para ${updatedPlant.name}.`);
+    await service.waterPlant(id);
+    return console.log('Rega registrada com sucesso.');
   }
 
   throw new Error(`Comando desconhecido: ${command}`);
