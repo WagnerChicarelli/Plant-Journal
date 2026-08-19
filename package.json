@@ -5,7 +5,7 @@
   "description": "CLI para acompanhar os cuidados com plantas.",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "start": "node src/app.js",
