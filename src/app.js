@@ -5,7 +5,7 @@ import { loadPlants, savePlants } from './storage.js';
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const dataFile = path.join(currentDirectory, '..', 'data', 'plants.json');
-const [command, ...argumentsList] = process.argv.slice(2);
+const [command, ...args] = process.argv.slice(2);
 
 function showHelp() {
   console.log(`Plant Journal — comandos disponíveis:
@@ -23,7 +23,7 @@ async function main() {
   if (!command || command === 'help') return showHelp();
 
   if (command === 'add') {
-    const [name, frequency = '7'] = argumentsList;
+    const [name, frequency = '7'] = args;
     const plant = createPlant({ name, wateringFrequency: frequency });
     await savePlants(dataFile, [...plants, plant]);
     return console.log(`Planta cadastrada: ${plant.name} (${plant.id})`);
@@ -37,7 +37,7 @@ async function main() {
   }
 
   if (command === 'water') {
-    const [id] = argumentsList;
+    const [id] = args;
     const index = plants.findIndex((plant) => plant.id === id);
     if (index === -1) throw new Error('Planta não encontrada. Use o comando list para obter o id.');
     const updatedPlant = waterPlant(plants[index]);

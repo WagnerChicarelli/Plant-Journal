@@ -37,5 +37,5 @@ export function waterPlant(plant, { amount = '', notes = '' } = {}) {
 export function isDueForWatering(plant, today = new Date()) {
   if (!plant.lastWatered) return true;
   const elapsedDays = (today - new Date(plant.lastWatered)) / (1000 * 60 * 60 * 24);
-  return elapsedDays >= plant.wateringFrequency;
+  return Math.floor(elapsedDays) >= plant.wateringFrequency;
 }
