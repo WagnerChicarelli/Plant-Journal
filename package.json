@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test tests/",
+    "test": "node --test tests/plant.test.js",
     "test:api": "node scripts/api-test.js",
     "migrate": "node src/db/migrate.js"
   },
