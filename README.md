@@ -11,13 +11,14 @@ CLI, API e Frontend para registrar plantas e acompanhar seus cuidados de rega. P
 - Consultar clima e recomendações de rega via API externa
 - Interface web para gerenciar plantas
 - API REST para integração com outros sistemas
-- Persistência de dados com SQLite
+- Persistência de dados com PostgreSQL
 - Testes automatizados unitários e de integração
 
 ## Pré-requisitos
 
 - Node.js 24 ou superior
 - npm (incluído com o Node.js)
+- PostgreSQL (banco de dados)
 - Docker (opcional, para containerização)
 
 ## Instalação
@@ -27,6 +28,16 @@ git clone https://github.com/WagnerChicarelli/Plantas.git
 cd Plantas
 npm install
 cd frontend && npm install
+```
+
+### Configurar banco de dados
+
+```bash
+# Criar banco (PostgreSQL deve estar rodando)
+createdb -U postgres plant_journal
+
+# Migrar dados do SQLite para PostgreSQL
+npm run migrate:sqlite
 ```
 
 ## Uso via CLI
@@ -153,7 +164,20 @@ curl "http://localhost:3000/plants/<id>/weather?latitude=-22.9&longitude=-43.2"
 
 ## Banco de Dados
 
-O projeto usa **SQLite** (via `sql.js`) para persistência. Os dados ficam em `data/plant.db`.
+O projeto usa **PostgreSQL** para persistência.
+
+### Configuração
+
+1. Certifique-se de que o PostgreSQL está rodando na porta 5432
+2. Crie o banco de dados:
+```bash
+createdb -U postgres plant_journal
+```
+
+3. Execute a migração:
+```bash
+npm run migrate:sqlite
+```
 
 ### Estrutura das tabelas
 
@@ -176,12 +200,6 @@ watering_events (
   amount TEXT,
   notes TEXT
 )
-```
-
-### Migrar dados do JSON para SQLite
-
-```bash
-npm run migrate
 ```
 
 ## Testes
@@ -272,15 +290,14 @@ push/PR → Testes → Build Docker → ghcr.io/wagnerchicarelli/plantas:latest
 
 ```
 plant-journal/
-├── data/
-│   └── plant.db                # Banco SQLite
 ├── src/
 │   ├── app.js                  # CLI principal
 │   ├── server.js               # API Express
 │   ├── db/
-│   │   ├── connection.js       # Conexão SQLite
+│   │   ├── connection.js       # Conexão PostgreSQL
 │   │   ├── migrations.js       # Criação das tabelas
-│   │   └── migrate.js          # Migração JSON → SQLite
+│   │   ├── migrate.js          # Migração JSON → PostgreSQL
+│   │   └── migrate-sqlite.js   # Migração SQLite → PostgreSQL
 │   ├── routes/
 │   │   └── plants.routes.js    # Rotas HTTP
 │   ├── services/
@@ -325,7 +342,7 @@ services/weather.service.js  → API externa (clima)
      ↓
 repositories/plants.repository.js → queries SQL
      ↓
-SQLite (data/plant.db)
+PostgreSQL
 ```
 
 ## Tecnologias
@@ -334,7 +351,7 @@ SQLite (data/plant.db)
 - **Express 5** — API web
 - **React 18** — frontend
 - **Vite** — build tool
-- **SQLite** (sql.js) — banco de dados
+- **PostgreSQL** — banco de dados
 - **Open-Meteo API** — dados climáticos
 - **Docker** — containerização
 - **GitHub Actions** — CI/CD
@@ -355,12 +372,12 @@ SQLite (data/plant.db)
 - [x] Testes automatizados completos
 - [x] Integração com API externa de clima
 - [x] Frontend com React
-- [ ] Migração para PostgreSQL
+- [x] Migração para PostgreSQL
+- [x] Docker
+- [x] CI/CD
 - [ ] Autenticação
 - [ ] Upload de imagens
 - [ ] Notificações
-- [ ] Docker
-- [ ] CI/CD
 
 ## Licença
 
