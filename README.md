@@ -24,7 +24,7 @@ CLI, API e Frontend para registrar plantas e acompanhar seus cuidados de rega. P
 ## Instalação
 
 ```bash
-git clone https://github.com/WagnerChicarelli/Plantas.git
+git clone https://github.com/WagnerChicarelli/Plant-Journal.git
 cd Plantas
 npm install
 cd frontend && npm install
