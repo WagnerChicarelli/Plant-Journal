@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Plant Journal API",
-    "description": "API para gerenciar plantas e regas",
+    "description": "API para gerenciar plantas, regas e clima",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -12,6 +12,14 @@
     {
       "key": "plantId",
       "value": ""
+    },
+    {
+      "key": "latitude",
+      "value": "-23.55"
+    },
+    {
+      "key": "longitude",
+      "value": "-46.63"
     }
   ],
   "item": [
@@ -126,6 +134,45 @@
               "raw": "{{baseUrl}}/plants/{{plantId}}/history",
               "host": ["{{baseUrl}}"],
               "path": ["plants", "{{plantId}}", "history"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clima",
+      "item": [
+        {
+          "name": "Consultar clima da planta",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants/{{plantId}}/weather?latitude={{latitude}}&longitude={{longitude}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "{{plantId}}", "weather"],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "{{latitude}}"
+                },
+                {
+                  "key": "longitude",
+                  "value": "{{longitude}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clima São Paulo (padrão)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/plants/{{plantId}}/weather",
+              "host": ["{{baseUrl}}"],
+              "path": ["plants", "{{plantId}}", "weather"]
             }
           },
           "response": []

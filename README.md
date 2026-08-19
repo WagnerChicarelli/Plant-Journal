@@ -1,6 +1,6 @@
 # Plant Journal
 
-CLI e API para registrar plantas e acompanhar seus cuidados de rega. Projeto de estudo com foco em boas práticas de desenvolvimento com Node.js.
+CLI, API e Frontend para registrar plantas e acompanhar seus cuidados de rega. Projeto de estudo com foco em boas práticas de desenvolvimento com Node.js.
 
 ## Funcionalidades
 
@@ -8,8 +8,11 @@ CLI e API para registrar plantas e acompanhar seus cuidados de rega. Projeto de 
 - Listar todas as plantas cadastradas
 - Identificar quais plantas precisam de água
 - Registrar histórico de regas
+- Consultar clima e recomendações de rega via API externa
+- Interface web para gerenciar plantas
 - API REST para integração com outros sistemas
 - Persistência de dados com SQLite
+- Testes automatizados unitários e de integração
 
 ## Pré-requisitos
 
@@ -23,6 +26,7 @@ CLI e API para registrar plantas e acompanhar seus cuidados de rega. Projeto de 
 git clone https://github.com/WagnerChicarelli/Plantas.git
 cd Plantas
 npm install
+cd frontend && npm install
 ```
 
 ## Uso via CLI
@@ -53,6 +57,36 @@ npm run dev
 
 A API estará disponível em `http://localhost:3000`.
 
+## Frontend
+
+O projeto inclui uma interface web construída com **React** e **Vite**.
+
+### Iniciar o frontend
+
+```bash
+# Terminal 1: API
+npm run dev
+
+# Terminal 2: Frontend
+npm run dev:frontend
+```
+
+Ou ambos juntos:
+
+```bash
+npm run dev:all
+```
+
+A interface estará disponível em `http://localhost:5173`.
+
+### Funcionalidades do Frontend
+
+- **Lista de plantas**: visualização em grid com status de rega
+- **Cadastro**: formulário para adicionar novas plantas
+- **Detalhes**: página com informações completas e histórico
+- **Clima**: consulta automática de temperatura e umidade
+- **Rega rápida**: botão para registrar rega direto do card
+
 ### Endpoints
 
 | Método | Rota | Descrição |
@@ -61,6 +95,7 @@ A API estará disponível em `http://localhost:3000`.
 | GET | `/plants/:id` | Busca uma planta pelo ID |
 | GET | `/plants/due-for-watering` | Lista plantas que precisam de água |
 | GET | `/plants/:id/history` | Histórico de regas da planta |
+| GET | `/plants/:id/weather` | Consulta clima e recomendação de rega |
 | POST | `/plants` | Cadastra uma nova planta |
 | POST | `/plants/:id/water` | Registra uma rega |
 
@@ -85,6 +120,35 @@ curl -X POST http://localhost:3000/plants/<id>/water \
 
 # Histórico de regas
 curl http://localhost:3000/plants/<id>/history
+
+# Consultar clima (padrão: São Paulo)
+curl http://localhost:3000/plants/<id>/weather
+
+# Consultar clima com coordenadas
+curl "http://localhost:3000/plants/<id>/weather?latitude=-22.9&longitude=-43.2"
+```
+
+### Resposta do endpoint de clima
+
+```json
+{
+  "plant": {
+    "id": "abc-123",
+    "name": "Manjericão",
+    "lastWatered": "2026-08-19T10:00:00.000Z",
+    "wateringFrequency": 2
+  },
+  "weather": {
+    "temperature": 28.5,
+    "humidity": 45,
+    "precipitationProbability": 10,
+    "recommendation": "Umidade baixa — rega recomendada."
+  },
+  "watering": {
+    "isDue": true,
+    "suggestion": "Planta precisa de água."
+  }
+}
 ```
 
 ## Banco de Dados
@@ -123,11 +187,55 @@ npm run migrate
 ## Testes
 
 ```bash
-# Testes unitários
+# Testes unitários (service + waterings)
 npm test
 
-# Testes de integração (API)
+# Testes de integração (rotas HTTP)
 npm run test:api
+```
+
+### Estrutura dos testes
+
+```
+tests/
+├── plant.test.js        # Testes da service (criação, validação)
+├── watering.test.js     # Testes de rega (frequência, histórico)
+└── routes.test.js       # Testes de integração (HTTP)
+```
+
+### Cenários de teste
+
+```
+✓ deve criar uma planta
+✓ não deve permitir planta sem nome
+✓ deve registrar uma rega
+✓ deve identificar plantas que precisam de água
+✓ deve retornar 404 para planta inexistente
+✓ deve consultar clima e recomendar rega
+```
+
+## API Externa (Clima)
+
+O projeto integra com a **Open-Meteo API** (gratuita, sem chave de API) para consultar dados climáticos.
+
+### Funcionalidades
+
+- Consulta temperatura, umidade e probabilidade de chuva
+- Recomendação automática de rega baseada no clima
+- Cache de 30 minutos para evitar requisições repetidas
+
+### Como funciona
+
+```
+GET /plants/:id/weather
+        ↓
+weather.service.js
+        ↓
+Open-Meteo API (fetch)
+        ↓
+Cache (30 min)
+        ↓
+Recomendação de rega
 ```
 
 ## Docker
@@ -176,13 +284,29 @@ plant-journal/
 │   ├── routes/
 │   │   └── plants.routes.js    # Rotas HTTP
 │   ├── services/
-│   │   └── plants.service.js   # Lógica de negócio
+│   │   ├── plants.service.js   # Lógica de negócio
+│   │   └── weather.service.js  # API externa de clima
 │   └── repositories/
 │       └── plants.repository.js # Acesso ao banco
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── PlantList.jsx    # Lista de plantas
+│   │   │   ├── PlantCard.jsx    # Card da planta
+│   │   │   ├── PlantForm.jsx    # Formulário de cadastro
+│   │   │   └── PlantDetail.jsx  # Detalhes + clima
+│   │   ├── services/
+│   │   │   └── api.js           # Chamadas à API
+│   │   ├── App.jsx              # Componente principal
+│   │   ├── main.jsx             # Ponto de entrada
+│   │   └── index.css            # Estilos
+│   └── vite.config.js           # Configuração Vite
 ├── scripts/
 │   └── api-test.js             # Testes de integração
 ├── tests/
-│   └── plant.test.js           # Testes unitários
+│   ├── plant.test.js           # Testes unitários
+│   ├── watering.test.js        # Testes de rega
+│   └── routes.test.js          # Testes de rotas
 ├── Dockerfile
 ├── docker-compose.yml
 └── package.json
@@ -193,9 +317,11 @@ plant-journal/
 ```
 HTTP request
      ↓
-routes/plants.routes.js    → recebe e valida
+routes/plants.routes.js      → recebe e valida
      ↓
-services/plants.service.js → regras de negócio
+services/plants.service.js   → regras de negócio
+     ↓
+services/weather.service.js  → API externa (clima)
      ↓
 repositories/plants.repository.js → queries SQL
      ↓
@@ -206,7 +332,10 @@ SQLite (data/plant.db)
 
 - **Node.js 24** — runtime
 - **Express 5** — API web
+- **React 18** — frontend
+- **Vite** — build tool
 - **SQLite** (sql.js) — banco de dados
+- **Open-Meteo API** — dados climáticos
 - **Docker** — containerização
 - **GitHub Actions** — CI/CD
 - **Node.js Test Runner** — testes nativos
@@ -223,10 +352,10 @@ SQLite (data/plant.db)
 - [x] Rotas REST
 - [x] Separação Routes / Services / Repository
 - [x] Migração para SQLite
+- [x] Testes automatizados completos
+- [x] Integração com API externa de clima
+- [x] Frontend com React
 - [ ] Migração para PostgreSQL
-- [ ] Testes automatizados completos
-- [ ] Integração com API externa de clima
-- [ ] Frontend
 - [ ] Autenticação
 - [ ] Upload de imagens
 - [ ] Notificações
