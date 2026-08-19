@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as service from '../services/plants.service.js';
+import { getWeather } from '../services/weather.service.js';
 
 const router = Router();
 
@@ -67,6 +68,44 @@ router.get('/plants/:id/history', async (req, res) => {
     res.json(plant.wateringHistory);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao carregar histórico.' });
+  }
+});
+
+router.get('/plants/:id/weather', async (req, res) => {
+  try {
+    const plant = await service.findById(req.params.id);
+    if (!plant) {
+      res.status(404).json({ error: 'Planta não encontrada.' });
+      return;
+    }
+
+    const { latitude = -23.55, longitude = -46.63 } = req.query;
+    const weather = await getWeather(Number(latitude), Number(longitude));
+
+    const isDue = service.isDueForWatering(plant);
+
+    res.json({
+      plant: {
+        id: plant.id,
+        name: plant.name,
+        lastWatered: plant.lastWatered,
+        wateringFrequency: plant.wateringFrequency
+      },
+      weather: {
+        temperature: weather.current.temperature,
+        humidity: weather.current.humidity,
+        precipitationProbability: weather.daily.precipitationProbability,
+        recommendation: weather.recommendation
+      },
+      watering: {
+        isDue,
+        suggestion: isDue
+          ? 'Planta precisa de água.'
+          : 'Planta não precisa de água no momento.'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao consultar clima.' });
   }
 });
 
