@@ -1,0 +1,311 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f4f0;
+  color: #2d3436;
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-header {
+  text-align: center;
+  padding: 30px 0;
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #2d5016;
+}
+
+.app-header p {
+  color: #636e72;
+  margin-top: 8px;
+}
+
+.app-nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.app-nav button {
+  padding: 10px 24px;
+  border: 2px solid #2d5016;
+  background: white;
+  color: #2d5016;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.app-nav button:hover {
+  background: #e8f5e9;
+}
+
+.app-nav button.active {
+  background: #2d5016;
+  color: white;
+}
+
+.plant-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.plant-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid #27ae60;
+}
+
+.plant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.plant-card.due {
+  border-left-color: #e17055;
+}
+
+.plant-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.plant-card-header h3 {
+  font-size: 1.3rem;
+  color: #2d3436;
+}
+
+.badge {
+  background: #e17055;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.species {
+  color: #636e72;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.location {
+  color: #636e72;
+  margin-bottom: 8px;
+}
+
+.watering-info {
+  font-size: 0.9rem;
+  color: #636e72;
+  margin-bottom: 12px;
+}
+
+.water-btn {
+  background: #0984e3;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.water-btn:hover {
+  background: #0652DD;
+}
+
+.water-btn.large {
+  padding: 12px 24px;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.plant-form {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.plant-form h2 {
+  margin-bottom: 20px;
+  color: #2d5016;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #27ae60;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.plant-form button {
+  width: 100%;
+  padding: 12px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.plant-form button:hover {
+  background: #219a52;
+}
+
+.plant-form button:disabled {
+  background: #b2bec3;
+  cursor: not-allowed;
+}
+
+.plant-detail {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #0984e3;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+.detail-header {
+  margin-bottom: 20px;
+}
+
+.detail-header h2 {
+  font-size: 2rem;
+  color: #2d5016;
+}
+
+.detail-info {
+  margin-bottom: 20px;
+}
+
+.detail-info p {
+  margin-bottom: 8px;
+}
+
+.history {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dfe6e9;
+}
+
+.history h3 {
+  margin-bottom: 12px;
+  color: #2d5016;
+}
+
+.history ul {
+  list-style: none;
+}
+
+.history li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  color: #636e72;
+}
+
+.weather-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #e8f5e9;
+  border-radius: 12px;
+}
+
+.weather-section h3 {
+  margin-bottom: 12px;
+  color: #2d5016;
+}
+
+.weather-info p {
+  margin-bottom: 6px;
+}
+
+.recommendation {
+  margin-top: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #2d5016;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 40px;
+  color: #636e72;
+}
+
+.error {
+  color: #d63031;
+  padding: 10px;
+  background: #ffeaa7;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
