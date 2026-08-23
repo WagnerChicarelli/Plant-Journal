@@ -10,6 +10,7 @@ function rowToPlant(row, events = []) {
     lastWatered: row.last_watered,
     notes: row.notes,
     createdAt: row.created_at,
+    userId: row.user_id,
     wateringHistory: events.map(e => ({
       wateredAt: e.watered_at,
       amount: e.amount,
@@ -18,8 +19,11 @@ function rowToPlant(row, events = []) {
   };
 }
 
-export async function findAll() {
-  const plantsResult = await query('SELECT * FROM plants ORDER BY created_at DESC');
+export async function findAllByUserId(userId) {
+  const plantsResult = await query(
+    'SELECT * FROM plants WHERE user_id = $1 ORDER BY created_at DESC',
+    [userId]
+  );
   const plants = [];
 
   for (const row of plantsResult.rows) {
@@ -33,8 +37,11 @@ export async function findAll() {
   return plants;
 }
 
-export async function findById(id) {
-  const result = await query('SELECT * FROM plants WHERE id = $1', [id]);
+export async function findByIdAndUserId(id, userId) {
+  const result = await query(
+    'SELECT * FROM plants WHERE id = $1 AND user_id = $2',
+    [id, userId]
+  );
   if (result.rows.length === 0) return null;
 
   const eventsResult = await query(
@@ -47,9 +54,9 @@ export async function findById(id) {
 
 export async function create(plant) {
   await query(
-    `INSERT INTO plants (id, name, species, location, watering_frequency, last_watered, notes, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [plant.id, plant.name, plant.species, plant.location, plant.wateringFrequency, plant.lastWatered, plant.notes, plant.createdAt]
+    `INSERT INTO plants (id, name, species, location, watering_frequency, last_watered, notes, created_at, user_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [plant.id, plant.name, plant.species, plant.location, plant.wateringFrequency, plant.lastWatered, plant.notes, plant.createdAt, plant.userId]
   );
   return plant;
 }
@@ -57,8 +64,8 @@ export async function create(plant) {
 export async function update(plant) {
   await query(
     `UPDATE plants SET name = $1, species = $2, location = $3, watering_frequency = $4, last_watered = $5, notes = $6
-     WHERE id = $7`,
-    [plant.name, plant.species, plant.location, plant.wateringFrequency, plant.lastWatered, plant.notes, plant.id]
+     WHERE id = $7 AND user_id = $8`,
+    [plant.name, plant.species, plant.location, plant.wateringFrequency, plant.lastWatered, plant.notes, plant.id, plant.userId]
   );
   return plant;
 }

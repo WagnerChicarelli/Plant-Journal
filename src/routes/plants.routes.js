@@ -1,21 +1,22 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware/auth.js';
 import * as service from '../services/plants.service.js';
 import { getWeather } from '../services/weather.service.js';
 
 const router = Router();
 
-router.get('/plants', async (req, res) => {
+router.get('/plants', authenticate, async (req, res) => {
   try {
-    const plants = await service.findAll();
+    const plants = await service.findAllByUserId(req.user.id);
     res.json(plants);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao carregar plantas.' });
   }
 });
 
-router.get('/plants/due-for-watering', async (req, res) => {
+router.get('/plants/due-for-watering', authenticate, async (req, res) => {
   try {
-    const plants = await service.findAll();
+    const plants = await service.findAllByUserId(req.user.id);
     const due = plants.filter(service.isDueForWatering);
     res.json(due);
   } catch (error) {
@@ -23,9 +24,9 @@ router.get('/plants/due-for-watering', async (req, res) => {
   }
 });
 
-router.get('/plants/:id', async (req, res) => {
+router.get('/plants/:id', authenticate, async (req, res) => {
   try {
-    const plant = await service.findById(req.params.id);
+    const plant = await service.findByIdAndUserId(req.params.id, req.user.id);
     if (!plant) {
       res.status(404).json({ error: 'Planta não encontrada.' });
       return;
@@ -36,18 +37,18 @@ router.get('/plants/:id', async (req, res) => {
   }
 });
 
-router.post('/plants', async (req, res) => {
+router.post('/plants', authenticate, async (req, res) => {
   try {
-    const plant = await service.addPlant(req.body);
+    const plant = await service.addPlant({ ...req.body, userId: req.user.id });
     res.status(201).json(plant);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-router.post('/plants/:id/water', async (req, res) => {
+router.post('/plants/:id/water', authenticate, async (req, res) => {
   try {
-    const plant = await service.waterPlant(req.params.id, req.body);
+    const plant = await service.waterPlant(req.params.id, req.body, req.user.id);
     res.json(plant);
   } catch (error) {
     if (error.message.includes('não encontrada')) {
@@ -58,9 +59,9 @@ router.post('/plants/:id/water', async (req, res) => {
   }
 });
 
-router.get('/plants/:id/history', async (req, res) => {
+router.get('/plants/:id/history', authenticate, async (req, res) => {
   try {
-    const plant = await service.findById(req.params.id);
+    const plant = await service.findByIdAndUserId(req.params.id, req.user.id);
     if (!plant) {
       res.status(404).json({ error: 'Planta não encontrada.' });
       return;
@@ -71,9 +72,9 @@ router.get('/plants/:id/history', async (req, res) => {
   }
 });
 
-router.get('/plants/:id/weather', async (req, res) => {
+router.get('/plants/:id/weather', authenticate, async (req, res) => {
   try {
-    const plant = await service.findById(req.params.id);
+    const plant = await service.findByIdAndUserId(req.params.id, req.user.id);
     if (!plant) {
       res.status(404).json({ error: 'Planta não encontrada.' });
       return;

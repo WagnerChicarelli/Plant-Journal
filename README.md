@@ -13,6 +13,10 @@ CLI, API e Frontend para registrar plantas e acompanhar seus cuidados de rega. P
 - API REST para integração com outros sistemas
 - Persistência de dados com PostgreSQL
 - Testes automatizados unitários e de integração
+- Autenticação JWT (registro e login)
+- Validação de domínio de email (MX records)
+- Login com email (em vez de nome)
+- Notificações por email (pendente SMTP)
 
 ## Pré-requisitos
 
@@ -100,9 +104,20 @@ A interface estará disponível em `http://localhost:5173`.
 
 ### Endpoints
 
+#### Autenticação
+
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| GET | `/plants` | Lista todas as plantas |
+| POST | `/auth/register` | Registra um novo usuário |
+| POST | `/auth/login` | Realiza login e retorna JWT |
+| GET | `/auth/confirm/:token` | Confirma email do usuário |
+| POST | `/auth/resend-confirmation` | Reenvia email de confirmação |
+
+#### Plantas (requer autenticação)
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/plants` | Lista todas as plantas do usuário |
 | GET | `/plants/:id` | Busca uma planta pelo ID |
 | GET | `/plants/due-for-watering` | Lista plantas que precisam de água |
 | GET | `/plants/:id/history` | Histórico de regas da planta |
@@ -110,33 +125,56 @@ A interface estará disponível em `http://localhost:5173`.
 | POST | `/plants` | Cadastra uma nova planta |
 | POST | `/plants/:id/water` | Registra uma rega |
 
+#### Notificações (requer autenticação)
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/notifications/overdue` | Lista plantas com rega atrasada |
+| POST | `/notifications/send-reminders` | Envia lembretes por email |
+
+#### Validação de Email
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/validate-email` | Valida se o domínio do email existe (MX) |
+
 #### Exemplos com curl
 
 ```bash
-# Listar plantas
-curl http://localhost:3000/plants
+# Registrar usuário
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Wagner", "email": "wagner@email.com", "password": "123456"}'
 
-# Buscar planta por ID
-curl http://localhost:3000/plants/<id>
+# Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "wagner@email.com", "password": "123456"}'
+# Retorno: { "user": {...}, "token": "eyJ..." }
+
+# Listar plantas (com token)
+curl http://localhost:3000/plants \
+  -H "Authorization: Bearer <token>"
 
 # Cadastrar planta
 curl -X POST http://localhost:3000/plants \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
   -d '{"name": "Rosa", "wateringFrequency": 3}'
 
 # Registrar rega
 curl -X POST http://localhost:3000/plants/<id>/water \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
   -d '{"amount": "200ml", "notes": "Rega pela manhã"}'
 
-# Histórico de regas
-curl http://localhost:3000/plants/<id>/history
+# Verificar plantas com rega atrasada
+curl http://localhost:3000/notifications/overdue \
+  -H "Authorization: Bearer <token>"
 
-# Consultar clima (padrão: São Paulo)
-curl http://localhost:3000/plants/<id>/weather
-
-# Consultar clima com coordenadas
-curl "http://localhost:3000/plants/<id>/weather?latitude=-22.9&longitude=-43.2"
+# Enviar lembretes por email
+curl -X POST http://localhost:3000/notifications/send-reminders \
+  -H "Authorization: Bearer <token>"
 ```
 
 ### Resposta do endpoint de clima
@@ -368,6 +406,8 @@ PostgreSQL
 - **Vite** — build tool
 - **PostgreSQL** — banco de dados
 - **WeatherAPI** — dados climáticos
+- **JWT** — autenticação
+- **Nodemailer** — envio de emails
 - **Docker** — containerização
 - **GitHub Actions** — CI/CD
 - **Node.js Test Runner** — testes nativos
@@ -390,9 +430,12 @@ PostgreSQL
 - [x] Migração para PostgreSQL
 - [x] Docker
 - [x] CI/CD
-- [ ] Autenticação
+- [x] Autenticação JWT
+- [x] Validação de domínio de email (MX)
+- [x] Login com email (em vez de nome)
+- [ ] Envio de emails (SMTP bloqueado — pendente OAuth2)
+- [ ] Confirmação de cadastro por email (comentado — pendente SMTP)
 - [ ] Upload de imagens
-- [ ] Notificações
 
 ## Licença
 

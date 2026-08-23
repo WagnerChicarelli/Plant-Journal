@@ -1,7 +1,9 @@
 import crypto from 'node:crypto';
 import * as repository from '../repositories/plants.repository.js';
+import * as notificationService from './notification.service.js';
+import { findByEmail } from '../repositories/users.repository.js';
 
-export function createPlant({ name, species = '', location = '', wateringFrequency = 7, notes = '' }) {
+export function createPlant({ name, species = '', location = '', wateringFrequency = 7, notes = '', userId }) {
   if (!name || !name.trim()) {
     throw new Error('O nome da planta é obrigatório.');
   }
@@ -21,25 +23,26 @@ export function createPlant({ name, species = '', location = '', wateringFrequen
     lastWatered: null,
     notes: notes.trim(),
     createdAt: now,
+    userId,
     wateringHistory: []
   };
 }
 
-export async function findAll() {
-  return repository.findAll();
+export async function findAllByUserId(userId) {
+  return repository.findAllByUserId(userId);
 }
 
-export async function findById(id) {
-  return repository.findById(id);
+export async function findByIdAndUserId(id, userId) {
+  return repository.findByIdAndUserId(id, userId);
 }
 
-export async function addPlant({ name, species, location, wateringFrequency, notes }) {
-  const plant = createPlant({ name, species, location, wateringFrequency, notes });
+export async function addPlant({ name, species, location, wateringFrequency, notes, userId }) {
+  const plant = createPlant({ name, species, location, wateringFrequency, notes, userId });
   return repository.create(plant);
 }
 
-export async function waterPlant(id, { amount = '', notes: eventNotes = '' } = {}) {
-  const plant = await repository.findById(id);
+export async function waterPlant(id, { amount = '', notes: eventNotes = '' } = {}, userId) {
+  const plant = await repository.findByIdAndUserId(id, userId);
   if (!plant) throw new Error('Planta não encontrada.');
 
   const now = new Date().toISOString();
@@ -56,6 +59,11 @@ export async function waterPlant(id, { amount = '', notes: eventNotes = '' } = {
     amount: String(amount).trim(),
     notes: String(eventNotes).trim()
   });
+
+  const user = await findByEmail(userId);
+  if (user) {
+    notificationService.sendWateringConfirmation(user.email, plant.name);
+  }
 
   return { ...updatedPlant, wateringHistory: plant.wateringHistory };
 }
