@@ -1,12 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AuthPage from './components/AuthPage.jsx';
 import PlantList from './components/PlantList.jsx';
 import PlantForm from './components/PlantForm.jsx';
 import PlantDetail from './components/PlantDetail.jsx';
+import { setToken, getToken } from './services/api.js';
 
 export default function App() {
+  const [user, setUser] = useState(null);
+  const [token, setTokenState] = useState(getToken());
   const [view, setView] = useState('list');
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (token) {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    }
+  }, [token]);
+
+  function handleLogin(userData, userToken) {
+    setUser(userData);
+    setTokenState(userToken);
+    setToken(userToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setView('list');
+  }
+
+  function handleLogout() {
+    setUser(null);
+    setTokenState(null);
+    setToken(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setView('list');
+  }
 
   function handlePlantCreated() {
     setRefreshKey(k => k + 1);
@@ -24,11 +54,16 @@ export default function App() {
     setView('list');
   }
 
+  if (!user) {
+    return <AuthPage onLogin={handleLogin} />;
+  }
+
   return (
     <div className="app">
       <header className="app-header">
         <h1>🌱 Plant Journal</h1>
-        <p>Cuide das suas plantas com inteligência</p>
+        <p>Oi, {user.name}!</p>
+        <button className="logout-btn" onClick={handleLogout}>Sair</button>
       </header>
 
       <nav className="app-nav">

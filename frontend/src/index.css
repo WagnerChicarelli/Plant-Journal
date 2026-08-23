@@ -161,6 +161,7 @@ body {
 
 .form-group {
   margin-bottom: 16px;
+  position: relative;
 }
 
 .form-group label {
@@ -191,24 +192,25 @@ body {
   resize: vertical;
 }
 
-.plant-form button {
+.auth-form button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: #27ae60;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  margin-top: 10px;
 }
 
-.plant-form button:hover {
+.auth-form button:hover {
   background: #219a52;
 }
 
-.plant-form button:disabled {
+.auth-form button:disabled {
   background: #b2bec3;
   cursor: not-allowed;
 }
@@ -308,4 +310,221 @@ body {
   background: #ffeaa7;
   border-radius: 8px;
   margin-bottom: 16px;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card-header {
+  margin-bottom: 25px;
+}
+
+.auth-card-header h2 {
+  font-size: 1.8rem;
+  color: #2d5016;
+  font-weight: 700;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-field label {
+  font-size: 0.85rem;
+  color: #636e72;
+  font-weight: 500;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f8f8f8;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.auth-field input:focus {
+  outline: none;
+  border-color: #27ae60;
+  background: white;
+}
+
+.auth-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: -5px;
+}
+
+.auth-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #27ae60;
+}
+
+.auth-checkbox label {
+  font-size: 0.85rem;
+  color: #636e72;
+  cursor: pointer;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 14px;
+  background: #2d5016;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+.auth-submit:hover {
+  background: #1e3a0f;
+}
+
+.auth-submit:disabled {
+  background: #b2bec3;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-footer p {
+  color: #636e72;
+  font-size: 0.9rem;
+}
+
+.auth-footer button {
+  background: none;
+  border: none;
+  color: #2d5016;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.auth-footer button:hover {
+  text-decoration: underline;
+}
+
+.password-rules {
+  margin: 10px 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.password-rules p {
+  font-weight: 600;
+  color: #2d3436;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.password-rules ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.password-rules li {
+  padding: 2px 0;
+  color: #636e72;
+  transition: color 0.2s;
+  font-size: 0.78rem;
+}
+
+.password-rules li::before {
+  content: '✗ ';
+  color: #d63031;
+}
+
+.password-rules li.valid::before {
+  content: '✓ ';
+  color: #27ae60;
+}
+
+.password-rules li.valid {
+  color: #27ae60;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid #d63031;
+  color: #d63031;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #d63031;
+  color: white;
+}
+
+.success {
+  color: #27ae60;
+  background: #d4edda;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.confirm-loading {
+  text-align: center;
+  padding: 30px;
+}
+
+.confirm-success, .confirm-error {
+  text-align: center;
+  padding: 30px;
+}
+
+.confirm-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.confirm-success p, .confirm-error p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #2d3436;
 }
